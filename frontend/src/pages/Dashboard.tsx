@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { Navigation } from '../components/Navigation';
+import { OutputCalendar } from '../components/OutputCalendar';
 import type { TodoItem } from '@shared/types/tasks';
 import type { Activity } from '@shared/types/activities';
+import type { GeneratedSchedule } from '@shared/types/scheduling';
 import '../styles/Dashboard.css';
 import axios from 'axios';
 
@@ -10,6 +12,7 @@ export function Dashboard() {
   const { currentUser } = useAuth();
   const [todos, setTodos] = useState<TodoItem[]>([]);
   const [activities, setActivities] = useState<Activity[]>([]);
+  const [, setGeneratedSchedule] = useState<GeneratedSchedule | null>(null);
   const [newTodo, setNewTodo] = useState({
     title: '',
     notes: '',
@@ -164,7 +167,7 @@ export function Dashboard() {
       try {
         await axios.put(`${import.meta.env.VITE_API_BASE_URL}/todos/${editingId}`, updatedData);
         setTodos(todos.map(todo =>
-          todo.id === editingId ? { ...todo, ...updatedData } : todo
+          todo.id === editingId ? { ...todo, ...updatedData } as TodoItem : todo
         ));
         
         // Refresh activities list in case a new one was created
@@ -440,25 +443,14 @@ export function Dashboard() {
           </div>
         </div>
 
-        {/* Weekly Schedule Section */}
+        {/* Output Calendar Section */}
         <div className="dashboard-section schedule-section">
-          <div className="section-header">
-            <h2>📅 Weekly Schedule</h2>
-          </div>
-          <div className="schedule-grid">
-            {['Mon', 'Tue', 'Wed'].map(day => (
-              <div key={day} className="schedule-day">
-                <div className="day-header">{day}</div>
-                <div className="day-events">
-                  <div className="event wake-up">7:00 AM - Wake Up</div>
-                  <div className="event study">9:00 AM - Math Study</div>
-                  <div className="event class">11:00 AM - Biology Class</div>
-                  <div className="event study">2:00 PM - Chemistry Study</div>
-                  <div className="event bedtime">11:00 PM - Bedtime</div>
-                </div>
-              </div>
-            ))}
-          </div>
+          <OutputCalendar 
+            userId={currentUser?.uid || ''}
+            todos={todos}
+            activities={activities}
+            onScheduleGenerated={setGeneratedSchedule}
+          />
         </div>
 
         {/* Analytics Section */}
