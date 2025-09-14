@@ -3,4 +3,3 @@ export * from './fileProcessor';
 export * from './syllabus';
 export * from './tasks';
 export * from './activities';
-export * from './scheduling';

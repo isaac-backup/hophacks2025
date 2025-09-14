@@ -4,7 +4,6 @@ import {db} from "./config/firebase";
 import {GoogleGenerativeAI} from "@google/generative-ai";
 import syllabusRoutes from "./routes/syllabusRoutes";
 import scheduleRoutes from "./services/scheduleService";
-import scheduleApiRoutes from "./routes/scheduleRoutes";
 
 import activityRoutes from "./activity";
 import todoRoutes from "./todo";
@@ -15,8 +14,6 @@ app.use(express.json());
 
 app.use("/syllabus", syllabusRoutes);
 app.use("/schedule", scheduleRoutes);
-app.use("/api/schedule", scheduleApiRoutes);
-app.use("/calendar", scheduleApiRoutes);
 
 app.get("/health", (req, res) => {
   res.json({status: "OK", message: "Backend server is running!"});
